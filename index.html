@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabriel Villarba | Tech & Cosmos Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            900: '#030712',
+                            800: '#0b0f19',
+                            700: '#111827',
+                        },
+                        neon: {
+                            cyan: '#00f0ff',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                            blue: '#3b82f6'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)' },
+                            '100%': { boxShadow: '0 0 30px rgba(168, 85, 247, 0.6)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Glowing & Grid Background Effects */
+        .tech-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+        .glass-panel {
+            background: rgba(11, 15, 25, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+        .glass-panel:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+        /* Canvas positioning */
+        #space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="bg-space-900 text-gray-100 font-sans min-h-screen relative overflow-x-hidden tech-grid selection:bg-neon-cyan selection:text-space-900">
+
+    <!-- Interactive Canvas Background (Stars & Circuit Particles) -->
+    <canvas id="space-canvas"></canvas>
+
+    <!-- App Container -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- Navigation Bar -->
+        <nav class="sticky top-0 z-40 glass-panel border-b border-cyan-500/20 px-4 lg:px-8 py-3 transition-all duration-300">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <!-- Brand/Logo -->
+                <a href="#hero" class="flex items-center gap-3 group">
+                    <div class="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 p-0.5 animate-pulse-glow">
+                        <div class="w-full h-full bg-space-900 rounded-[10px] flex items-center justify-center">
+                            <i data-lucide="orbit" class="w-6 h-6 text-neon-cyan group-hover:rotate-180 transition-transform duration-700"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-neon-cyan via-purple-400 to-pink-500 bg-clip-text text-transparent">GABRIEL VILLARBA</span>
+                        <span class="block text-[10px] tracking-widest text-cyan-400 uppercase font-mono">Tech & Cosmos Hub</span>
+                    </div>
+                </a>
+
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-300">
+                    <a href="#about" class="hover:text-neon-cyan transition-colors duration-200 flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4"></i> Vision & Bio</a>
+                    <a href="#gallery" class="hover:text-neon-cyan transition-colors duration-200 flex items-center gap-1.5"><i data-lucide="image" class="w-4 h-4"></i> Cosmos Vault</a>
+                    <a href="#tools" class="hover:text-neon-cyan transition-colors duration-200 flex items-center gap-1.5"><i data-lucide="terminal" class="w-4 h-4"></i> Interactive Deck</a>
+                </div>
+
+                <!-- User Controls / Auth Buttons -->
+                <div class="flex items-center gap-3" id="nav-auth-container">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="relative pt-12 pb-20 px-4 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center justify-center min-h-[85vh]">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-xs text-neon-cyan border border-cyan-500/30 mb-6 animate-float">
+                <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                Intersection of Information Technology & Deep Space Exploration
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mb-6 leading-tight">
+                Architecting the Future of <br>
+                <span class="bg-gradient-to-r from-neon-cyan via-purple-400 to-pink-500 bg-clip-text text-transparent glow-text">
+                    Digital Cosmos & Cyber Systems
+                </span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="max-w-3xl text-gray-400 text-base sm:text-lg mb-8 leading-relaxed">
+                Welcome to <strong class="text-cyan-300">Gabriel Villarba's</strong> official portal. Blending futuristic computing infrastructure, software craftsmanship, and astronomical data visualization into one unified digital environment.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="#gallery" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-space-900 font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all duration-300 transform hover:-translate-y-0.5">
+                    <i data-lucide="rocket" class="w-5 h-5"></i> Explore Media Vault
+                </a>
+                <a href="#tools" class="px-6 py-3.5 rounded-xl glass-panel text-cyan-300 hover:text-white font-semibold flex items-center gap-2 border border-cyan-500/30 hover:border-cyan-400 transition-all duration-300">
+                    <i data-lucide="binary" class="w-5 h-5"></i> Launch Tech Deck
+                </a>
+            </div>
+
+            <!-- Quick Stats Banner -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 w-full max-w-4xl">
+                <div class="glass-panel p-4 rounded-2xl border border-cyan-500/20 text-center">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-neon-cyan font-mono" id="stat-1">0</div>
+                    <div class="text-xs text-gray-400 mt-1">Light Years Processed</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-purple-500/20 text-center">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 font-mono" id="stat-2">0</div>
+                    <div class="text-xs text-gray-400 mt-1">Active Tech Nodes</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-pink-500/20 text-center">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-pink-400 font-mono" id="stat-3">0</div>
+                    <div class="text-xs text-gray-400 mt-1">Satellites Simulated</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-blue-500/20 text-center">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-blue-400 font-mono" id="stat-4">100%</div>
+                    <div class="text-xs text-gray-400 mt-1">Operational Uptime</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About / Vision Section -->
+        <section id="about" class="py-16 px-4 lg:px-8 max-w-7xl mx-auto w-full">
+            <div class="glass-panel rounded-3xl p-8 lg:p-12 border border-cyan-500/20 relative overflow-hidden">
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="grid md:grid-cols-2 gap-10 items-center relative z-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3">
+                            <i data-lucide="user" class="w-4 h-4"></i> About the Creator
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-white">
+                            Gabriel Villarba
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            Driven by a passion for modern technology and the mysterious mechanics of the universe, I bridge the gap between complex Information Technology systems and deep space data analysis.
+                        </p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Whether architecting scalable cloud software, engineering neural networks, or rendering real-time orbital calculations, this hub serves as a showcase of cybernetic innovation and astronomical curiosity.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-3 py-1.5 rounded-lg bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 text-xs font-mono flex items-center gap-1.5">
+                                <i data-lucide="code" class="w-3.5 h-3.5"></i> Full-Stack Engineering
+                            </span>
+                            <span class="px-3 py-1.5 rounded-lg bg-purple-950/60 text-purple-400 border border-purple-800/50 text-xs font-mono flex items-center gap-1.5">
+                                <i data-lucide="satellite" class="w-3.5 h-3.5"></i> Space Informatics
+                            </span>
+                            <span class="px-3 py-1.5 rounded-lg bg-pink-950/60 text-pink-400 border border-pink-800/50 text-xs font-mono flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Cybersecurity & Cloud
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="relative flex justify-center">
+                        <!-- Futuristic Graphic -->
+                        <div class="w-72 h-72 sm:w-80 sm:h-80 rounded-2xl bg-gradient-to-br from-cyan-900/40 via-purple-900/40 to-space-900 border border-cyan-500/30 p-4 relative flex items-center justify-center animate-pulse-glow">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-56 h-56 rounded-full border border-cyan-500/20 animate-spin-slow"></div>
+                                <div class="w-40 h-40 rounded-full border border-dashed border-purple-500/40 animate-spin-slow" style="animation-direction: reverse;"></div>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <i data-lucide="atom" class="w-20 h-20 text-neon-cyan mx-auto mb-2 animate-pulse"></i>
+                                <div class="font-mono text-xs text-cyan-300">GABRIEL_VILLARBA.SYS</div>
+                                <div class="font-mono text-[10px] text-gray-500">STATUS: ONLINE / SECURE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cosmos Vault / Media Gallery Section -->
+        <section id="gallery" class="py-16 px-4 lg:px-8 max-w-7xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-neon-cyan uppercase tracking-widest mb-2">
+                        <i data-lucide="database" class="w-4 h-4"></i> Digital Repository
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white">Cosmos & Tech Vault</h2>
+                    <p class="text-gray-400 text-sm mt-1">Upload, filter, view, and organize high-definition IT and Space media.</p>
+                </div>
+
+                <!-- Gallery Controls -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Add Image Button -->
+                    <button onclick="openAddModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-semibold flex items-center gap-2 shadow-lg shadow-purple-600/20 transition-all">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Add Media
+                    </button>
+                    <!-- Category Filters -->
+                    <div class="flex bg-space-800 p-1 rounded-xl border border-gray-800 text-xs font-medium">
+                        <button onclick="filterGallery('all')" class="filter-btn active px-3 py-1.5 rounded-lg text-cyan-400 bg-space-900 border border-cyan-500/30 transition-all">All</button>
+                        <button onclick="filterGallery('space')" class="filter-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all">Space</button>
+                        <button onclick="filterGallery('tech')" class="filter-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all">Tech & IT</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div id="gallery-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic cards populated by JS -->
+            </div>
+        </section>
+
+        <!-- Interactive IT & Space Tools Section -->
+        <section id="tools" class="py-16 px-4 lg:px-8 max-w-7xl mx-auto w-full">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 text-xs font-mono text-purple-400 uppercase tracking-widest mb-2">
+                    <i data-lucide="cpu" class="w-4 h-4"></i> Interactive Command Center
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white">Space & Tech Deck</h2>
+                <p class="text-gray-400 text-sm mt-2">Test your knowledge with the Cosmos Quiz or view deep space daily logs.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Space & Tech Quiz Widget -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/20 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="text-xs font-mono text-neon-cyan px-2.5 py-1 rounded-md bg-cyan-950 border border-cyan-800">MODULE 01: QUIZ</span>
+                            <span class="text-xs text-gray-400 font-mono" id="quiz-progress">Question 1/3</span>
+                        </div>
+                        
+                        <div id="quiz-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div id="quiz-footer" class="mt-6 pt-4 border-t border-gray-800 flex justify-end">
+                        <button id="quiz-next-btn" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-cyan-500 text-space-900 font-bold hover:bg-cyan-400 transition-all text-sm flex items-center gap-2" disabled>
+                            Next Challenge <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- APOD / Cosmos Daily Log Simulator -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-purple-500/20 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-mono text-purple-400 px-2.5 py-1 rounded-md bg-purple-950 border border-purple-800">MODULE 02: TELEMETRY</span>
+                            <span class="text-xs text-gray-400 font-mono"><i data-lucide="wifi" class="w-3 h-3 inline text-green-400"></i> LIVE FEED</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-white mb-2" id="apod-title">Carina Nebula - Cyber Spectral Stream</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-4" id="apod-date">TIMESTAMP: 2026.10.22 - ORBIT SECTOR 7</p>
+
+                        <div class="relative group rounded-xl overflow-hidden border border-purple-500/30 mb-4 h-48 bg-space-800">
+                            <img id="apod-image" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop" alt="Cosmic View" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-space-900 via-transparent to-transparent opacity-80"></div>
+                            <div class="absolute bottom-3 left-3 text-xs text-cyan-300 font-mono bg-space-900/80 px-2 py-1 rounded">
+                                Spectrum: InfraRed + Quantum Fiber
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-300 leading-relaxed" id="apod-desc">
+                            High-frequency spectrum telemetry capturing star formation regions. Fiber optic cloud sensors transmit petabytes of interstellar atmospheric data back to Earth servers.
+                        </p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-800 flex justify-between items-center">
+                        <button onclick="cycleApod()" class="px-4 py-2 rounded-xl glass-panel text-purple-300 hover:text-white border border-purple-500/30 text-xs font-semibold flex items-center gap-2 transition-all">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Fetch Next Target
+                        </button>
+                        <span class="text-[10px] text-gray-500 font-mono">HUB ID: GABRIEL-V-2026</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-auto border-t border-cyan-500/20 glass-panel py-8 px-4 lg:px-8 text-center text-xs text-gray-400">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="orbit" class="w-5 h-5 text-neon-cyan"></i>
+                    <span class="font-bold text-white tracking-wider">GABRIEL VILLARBA</span>
+                    <span>&copy; 2026 All Rights Reserved.</span>
+                </div>
+                <div class="flex items-center gap-6 text-gray-400">
+                    <a href="#hero" class="hover:text-neon-cyan transition-colors">Top</a>
+                    <a href="#about" class="hover:text-neon-cyan transition-colors">Vision</a>
+                    <a href="#gallery" class="hover:text-neon-cyan transition-colors">Vault</a>
+                    <a href="#tools" class="hover:text-neon-cyan transition-colors">Deck</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Authentication Modal (Sign In / Sign Up) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-space-900/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-md rounded-3xl border border-cyan-500/30 p-6 sm:p-8 relative shadow-2xl shadow-cyan-500/10">
+            <!-- Close Button -->
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Tabs Header -->
+            <div class="flex border-b border-gray-800 mb-6">
+                <button id="tab-signin" onclick="switchAuthTab('signin')" class="flex-1 py-3 text-sm font-semibold text-neon-cyan border-b-2 border-neon-cyan transition-all">
+                    Sign In
+                </button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent hover:text-gray-200 transition-all">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- Sign In Form -->
+            <form id="form-signin" onsubmit="handleSignIn(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">EMAIL OR USERNAME</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="w-4 h-4 absolute left-3 top-3.5 text-gray-500"></i>
+                        <input type="text" id="signin-email" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 pl-10 text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors" placeholder="gabriel@cosmos.tech">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">PASSWORD</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-4 h-4 absolute left-3 top-3.5 text-gray-500"></i>
+                        <input type="password" id="signin-password" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 pl-10 pr-10 text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('signin-password', this)" class="absolute right-3 top-3.5 text-gray-500 hover:text-gray-300">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-space-900 font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all mt-2">
+                    Access Portal
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="form-signup" onsubmit="handleSignUp(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">FULL NAME</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-4 h-4 absolute left-3 top-3.5 text-gray-500"></i>
+                        <input type="text" id="signup-name" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 pl-10 text-sm text-white focus:outline-none focus:border-purple-400 transition-colors" placeholder="Gabriel Villarba">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">EMAIL ADDRESS</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="w-4 h-4 absolute left-3 top-3.5 text-gray-500"></i>
+                        <input type="email" id="signup-email" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 pl-10 text-sm text-white focus:outline-none focus:border-purple-400 transition-colors" placeholder="gabriel@cosmos.tech">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">PASSWORD</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-4 h-4 absolute left-3 top-3.5 text-gray-500"></i>
+                        <input type="password" id="signup-password" required minlength="6" class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 pl-10 pr-10 text-sm text-white focus:outline-none focus:border-purple-400 transition-colors" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password', this)" class="absolute right-3 top-3.5 text-gray-500 hover:text-gray-300">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-purple-600/20 transition-all mt-2">
+                    Create Space Account
+                </button>
+            </form>
+
+            <div id="auth-alert" class="mt-4 p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-red-300 text-xs hidden"></div>
+        </div>
+    </div>
+
+    <!-- Add Image Modal -->
+    <div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-space-900/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-3xl border border-purple-500/30 p-6 sm:p-8 relative">
+            <button onclick="closeAddModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-white mb-1">Upload to Vault</h3>
+            <p class="text-xs text-gray-400 mb-6">Add a new Space or Technology image URL to Gabriel's gallery.</p>
+
+            <form onsubmit="handleAddImage(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">MEDIA TITLE</label>
+                    <input type="text" id="add-title" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400" placeholder="e.g. Quantum Computing Rig">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">CATEGORY</label>
+                    <select id="add-category" class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
+                        <option value="space">Space Exploration</option>
+                        <option value="tech">Technology & IT</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">IMAGE URL</label>
+                    <input type="url" id="add-url" required class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-300 mb-1">DESCRIPTION</label>
+                    <textarea id="add-desc" rows="3" class="w-full bg-space-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400" placeholder="Brief summary..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all">
+                        Commit to Vault
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Fullscreen Lightbox Modal -->
+    <div id="lightbox-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-space-900/90 backdrop-blur-lg hidden opacity-0 transition-opacity duration-300">
+        <div class="relative max-w-4xl w-full flex flex-col items-center">
+            <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Fullscreen view" class="max-h-[80vh] w-auto rounded-2xl border border-cyan-500/30 shadow-2xl object-contain">
+            <div class="mt-4 text-center">
+                <h4 id="lightbox-title" class="text-xl font-bold text-white"></h4>
+                <p id="lightbox-desc" class="text-sm text-gray-400 mt-1 max-w-xl"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 glass-panel border border-cyan-500/40 text-cyan-200 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i data-lucide="info" id="toast-icon" class="w-5 h-5 text-neon-cyan"></i>
+        <span id="toast-msg" class="text-sm font-medium">Notification message</span>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        /* ================= STATE & INITIAL DATA ================= */
+        let currentUser = null;
+        let galleryItems = [
+            {
+                id: '1',
+                title: 'Deep Cosmic Nebula',
+                category: 'space',
+                url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1000&auto=format&fit=crop',
+                desc: 'Glorious vibrant gas clouds forming remote galaxies millions of light-years away.'
+            },
+            {
+                id: '2',
+                title: 'Cyber Data Center',
+                category: 'tech',
+                url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop',
+                desc: 'High-throughput server infrastructure powering modern AI neural workloads.'
+            },
+            {
+                id: '3',
+                title: 'Astronaut Orbital Drift',
+                category: 'space',
+                url: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1000&auto=format&fit=crop',
+                desc: 'Extravehicular activity in low Earth orbit maintaining communications arrays.'
+            },
+            {
+                id: '4',
+                title: 'Quantum Microprocessor',
+                category: 'tech',
+                url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
+                desc: 'Next-generation silicon logic board engineering for advanced telemetry processing.'
+            },
+            {
+                id: '5',
+                title: 'Spiral Galaxy Horizons',
+                category: 'space',
+                url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop',
+                desc: 'Deep space optical observation of ancient rotating galaxy clusters.'
+            },
+            {
+                id: '6',
+                title: 'Futuristic Matrix Interface',
+                category: 'tech',
+                url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop',
+                desc: 'Cybersecurity encryption matrix monitoring global network nodes.'
+            }
+        ];
+
+        let activeFilter = 'all';
+
+        // Quiz Data
+        const quizData = [
+            {
+                question: "What is the primary computer language used for low-level flight software on interplanetary rovers?",
+                options: ["Python", "C / C++", "JavaScript", "Ruby"],
+                correct: 1
+            },
+            {
+                question: "Which nebula is famous for star-forming regions often called the 'Pillars of Creation'?",
+                options: ["Eagle Nebula", "Orion Nebula", "Crab Nebula", "Andromeda"],
+                correct: 0
+            },
+            {
+                question: "What technology allows decentralized secure data recording across space station nodes?",
+                options: ["Quantum Tunneling", "Blockchain / Distributed Ledgers", "Analog Radio", "CRT Monitors"],
+                correct: 1
+            }
+        ];
+        let currentQuizIndex = 0;
+        let selectedQuizOption = null;
+
+        // APOD Feed Data
+        const apodData = [
+            {
+                title: "Carina Nebula - Cyber Spectral Stream",
+                date: "TIMESTAMP: 2026.10.22 - ORBIT SECTOR 7",
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop",
+                desc: "High-frequency spectrum telemetry capturing star formation regions. Cloud sensors transmit petabytes of interstellar atmospheric data back to Earth servers."
+            },
+            {
+                title: "Quantum Orbital Array",
+                date: "TIMESTAMP: 2026.10.21 - GEOSTATIONARY 4",
+                image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1000&auto=format&fit=crop",
+                desc: "Solar panel deployment capturing raw stellar radiation to feed onboard high-performance quantum computing clusters."
+            },
+            {
+                title: "Synthetic Server Matrix Core",
+                date: "TIMESTAMP: 2026.10.20 - SUB-SPACE HUB",
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop",
+                desc: "Automated liquid cooling systems keeping deep space communication servers at near absolute zero operating temperatures."
+            }
+        ];
+        let currentApodIndex = 0;
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Load saved user session
+            const savedUser = localStorage.getItem('gv_user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                } catch(e) { currentUser = null; }
+            }
+
+            // Load saved gallery
+            const savedGallery = localStorage.getItem('gv_gallery');
+            if (savedGallery) {
+                try {
+                    galleryItems = JSON.parse(savedGallery);
+                } catch(e) {}
+            }
+
+            // Render Nav & Gallery
+            renderNav();
+            renderGallery();
+            renderQuiz();
+            animateCounters();
+            initSpaceCanvas();
+        });
+
+        /* ================= AUTHENTICATION ================= */
+        function renderNav() {
+            const container = document.getElementById('nav-auth-container');
+            if (currentUser) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 bg-space-800 border border-cyan-500/30 px-3 py-1.5 rounded-xl">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-400 to-purple-600 flex items-center justify-center font-bold text-space-900 text-xs">
+                                ${currentUser.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="text-left hidden sm:block">
+                                <span class="block text-xs font-bold text-white leading-tight">${currentUser.name}</span>
+                                <span class="block text-[9px] text-cyan-400 font-mono">EXPLORER</span>
+                            </div>
+                        </div>
+                        <button onclick="handleLogout()" class="p-2 rounded-xl text-gray-400 hover:text-red-400 hover:bg-space-800 transition-colors" title="Sign Out">
+                            <i data-lucide="log-out" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAuthModal('signin')" class="text-xs font-semibold text-gray-300 hover:text-cyan-400 transition-colors px-3 py-2">
+                        Sign In
+                    </button>
+                    <button onclick="openAuthModal('signup')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-space-900 font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all">
+                        Sign Up
+                    </button>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        function openAuthModal(tab = 'signin') {
+            switchAuthTab(tab);
+            const modal = document.getElementById('auth-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('auth-alert').classList.add('hidden');
+            }, 300);
+        }
+
+        function switchAuthTab(tab) {
+            const signinBtn = document.getElementById('tab-signin');
+            const signupBtn = document.getElementById('tab-signup');
+            const signinForm = document.getElementById('form-signin');
+            const signupForm = document.getElementById('form-signup');
+            document.getElementById('auth-alert').classList.add('hidden');
+
+            if (tab === 'signin') {
+                signinBtn.className = "flex-1 py-3 text-sm font-semibold text-neon-cyan border-b-2 border-neon-cyan transition-all";
+                signupBtn.className = "flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent hover:text-gray-200 transition-all";
+                signinForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            } else {
+                signupBtn.className = "flex-1 py-3 text-sm font-semibold text-purple-400 border-b-2 border-purple-400 transition-all";
+                signinBtn.className = "flex-1 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent hover:text-gray-200 transition-all";
+                signupForm.classList.remove('hidden');
+                signinForm.classList.add('hidden');
+            }
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = `<i data-lucide="eye-off" class="w-4 h-4"></i>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function showAuthAlert(msg) {
+            const box = document.getElementById('auth-alert');
+            box.innerText = msg;
+            box.classList.remove('hidden');
+        }
+
+        function handleSignIn(e) {
+            e.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            const pass = document.getElementById('signin-password').value;
+
+            // Simple demo validation
+            if (pass.length < 4) {
+                showAuthAlert("Password must be at least 4 characters.");
+                return;
+            }
+
+            const name = email.split('@')[0] || "Explorer";
+            currentUser = { email, name };
+            localStorage.setItem('gv_user', JSON.stringify(currentUser));
+            renderNav();
+            closeAuthModal();
+            showToast(`Welcome back, Commander ${name}!`);
+        }
+
+        function handleSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const pass = document.getElementById('signup-password').value;
+
+            if (pass.length < 6) {
+                showAuthAlert("Password must be at least 6 characters.");
+                return;
+            }
+
+            currentUser = { email, name };
+            localStorage.setItem('gv_user', JSON.stringify(currentUser));
+            renderNav();
+            closeAuthModal();
+            showToast(`Account created! Welcome aboard, ${name}.`);
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('gv_user');
+            renderNav();
+            showToast("Successfully logged out.");
+        }
+
+        /* ================= GALLERY FUNCTIONS ================= */
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            const filtered = galleryItems.filter(item => activeFilter === 'all' || item.category === activeFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-gray-500 glass-panel rounded-2xl">
+                        <i data-lucide="image-off" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+                        No cosmos media found in this filter.
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300 group flex flex-col";
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden bg-space-800">
+                        <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/0b0f19/00f0ff?text=Cosmos+Media'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-space-900 via-transparent to-transparent opacity-60"></div>
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-mono uppercase font-bold ${item.category === 'space' ? 'bg-purple-950/80 text-purple-300 border border-purple-700' : 'bg-cyan-950/80 text-cyan-300 border border-cyan-700'}">
+                            ${item.category}
+                        </span>
+                        <div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openLightbox('${item.id}')" class="p-2 rounded-lg bg-space-900/80 text-cyan-300 hover:text-white transition-colors" title="Full Screen">
+                                <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteGalleryItem('${item.id}')" class="p-2 rounded-lg bg-space-900/80 text-red-400 hover:text-red-300 transition-colors" title="Delete">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-1 group-hover:text-neon-cyan transition-colors">${item.title}</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed">${item.desc}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-gray-800/60 flex items-center justify-between text-[10px] font-mono text-gray-500">
+                            <span>ID: #${item.id.padStart(4, '0')}</span>
+                            <span>GABRIEL_VAULT</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function filterGallery(category) {
+            activeFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(category) || (category === 'all' && btn.textContent === 'All')) {
+                    btn.className = "filter-btn active px-3 py-1.5 rounded-lg text-cyan-400 bg-space-900 border border-cyan-500/30 transition-all";
+                } else {
+                    btn.className = "filter-btn px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all";
+                }
+            });
+            renderGallery();
+        }
+
+        function openAddModal() {
+            const modal = document.getElementById('add-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeAddModal() {
+            const modal = document.getElementById('add-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function handleAddImage(e) {
+            e.preventDefault();
+            const title = document.getElementById('add-title').value;
+            const category = document.getElementById('add-category').value;
+            const url = document.getElementById('add-url').value;
+            const desc = document.getElementById('add-desc').value || "No description provided.";
+
+            const newItem = {
+                id: Date.now().toString(),
+                title,
+                category,
+                url,
+                desc
+            };
+
+            galleryItems.unshift(newItem);
+            localStorage.setItem('gv_gallery', JSON.stringify(galleryItems));
+            renderGallery();
+            closeAddModal();
+            showToast("New media successfully logged into Vault.");
+
+            // Reset form
+            e.target.reset();
+        }
+
+        function deleteGalleryItem(id) {
+            galleryItems = galleryItems.filter(item => item.id !== id);
+            localStorage.setItem('gv_gallery', JSON.stringify(galleryItems));
+            renderGallery();
+            showToast("Item purged from repository.");
+        }
+
+        function openLightbox(id) {
+            const item = galleryItems.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('lightbox-img').src = item.url;
+            document.getElementById('lightbox-title').innerText = item.title;
+            document.getElementById('lightbox-desc').innerText = item.desc;
+
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        /* ================= QUIZ & INTERACTIVE TOOLS ================= */
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            const item = quizData[currentQuizIndex];
+
+            document.getElementById('quiz-progress').innerText = `Question ${currentQuizIndex + 1}/${quizData.length}`;
+
+            container.innerHTML = `
+                <h4 class="text-lg font-semibold text-white mb-4">${item.question}</h4>
+                <div class="space-y-2.5">
+                    ${item.options.map((opt, idx) => `
+                        <button onclick="selectQuizOption(${idx})" class="quiz-opt-btn w-full text-left p-3.5 rounded-xl bg-space-800 border border-gray-700/60 hover:border-cyan-400 text-sm text-gray-300 transition-all flex items-center justify-between" data-idx="${idx}">
+                            <span>${opt}</span>
+                            <span class="w-5 h-5 rounded-full border border-gray-600 flex items-center justify-center text-[10px] font-mono">${String.fromCharCode(65 + idx)}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('quiz-next-btn').disabled = true;
+        }
+
+        function selectQuizOption(idx) {
+            selectedQuizOption = idx;
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            const correctIdx = quizData[currentQuizIndex].correct;
+
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === correctIdx) {
+                    btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-xl bg-green-950/80 border border-green-500 text-sm text-green-300 transition-all flex items-center justify-between";
+                } else if (i === idx) {
+                    btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-xl bg-red-950/80 border border-red-500 text-sm text-red-300 transition-all flex items-center justify-between";
+                } else {
+                    btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-xl bg-space-800 border border-gray-800 text-sm text-gray-500 transition-all flex items-center justify-between opacity-50";
+                }
+            });
+
+            document.getElementById('quiz-next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuizIndex < quizData.length - 1) {
+                currentQuizIndex++;
+                renderQuiz();
+            } else {
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i data-lucide="award" class="w-12 h-12 text-neon-cyan mx-auto mb-3 animate-bounce"></i>
+                        <h4 class="text-xl font-bold text-white mb-1">Module Completed!</h4>
+                        <p class="text-xs text-gray-400">You have successfully passed Gabriel's Cyber-Cosmos Telemetry Assessment.</p>
+                        <button onclick="resetQuiz()" class="mt-6 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400 text-cyan-300 text-xs font-mono hover:bg-cyan-500/30 transition-all">
+                            Restart Assessment
+                        </button>
+                    </div>
+                `;
+                document.getElementById('quiz-footer').classList.add('hidden');
+                lucide.createIcons();
+            }
+        }
+
+        function resetQuiz() {
+            currentQuizIndex = 0;
+            document.getElementById('quiz-footer').classList.remove('hidden');
+            renderQuiz();
+        }
+
+        function cycleApod() {
+            currentApodIndex = (currentApodIndex + 1) % apodData.length;
+            const data = apodData[currentApodIndex];
+
+            document.getElementById('apod-title').innerText = data.title;
+            document.getElementById('apod-date').innerText = data.date;
+            document.getElementById('apod-image').src = data.image;
+            document.getElementById('apod-desc').innerText = data.desc;
+        }
+
+        /* ================= ANIMATED COUNTERS ================= */
+        function animateCounters() {
+            const targets = [
+                { id: 'stat-1', end: 4280, suffix: ' LY' },
+                { id: 'stat-2', end: 1024, suffix: ' Nodes' },
+                { id: 'stat-3', end: 88, suffix: ' Active' }
+            ];
+
+            targets.forEach(t => {
+                let current = 0;
+                const increment = Math.ceil(t.end / 50);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= t.end) {
+                        current = t.end;
+                        clearInterval(timer);
+                    }
+                    const el = document.getElementById(t.id);
+                    if (el) el.innerText = current.toLocaleString() + t.suffix;
+                }, 30);
+            });
+        }
+
+        /* ================= TOAST NOTIFICATION ================= */
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        /* ================= SPACE & TECH CANVAS ANIMATION ================= */
+        function initSpaceCanvas() {
+            const canvas = document.getElementById('space-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            // Particles array
+            const particles = [];
+            const particleCount = Math.floor((width * height) / 12000);
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    color: Math.random() > 0.4 ? '#00f0ff' : (Math.random() > 0.5 ? '#a855f7' : '#ffffff'),
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    alpha: Math.random()
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw background stars
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fill();
+                });
+
+                // Connect nearby tech particles with grid lines
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 90) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = '#00f0ff';
+                            ctx.globalAlpha = (1 - dist / 90) * 0.15;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        }
+    </script>
+</body>
+</html>
